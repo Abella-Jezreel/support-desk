@@ -11,6 +11,7 @@ connectDB();
 require("dotenv").config();
 
 const { errorHandler } = require("./middleware/errorMiddleware");
+const { protect } = require("./middleware/authMiddleware");
 
 // Retrieve the PORT number from environment variables or default to 5000
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 // @desc: Middleware to handle errors in the application.
 // @desc: This middleware is used to catch any errors that occur during the request-response cycle.
 app.use(errorHandler);
+app.use(protect);
 
 // Server startup
 // @desc: Starts the server and listens on the specified PORT.

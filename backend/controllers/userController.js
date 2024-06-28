@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 
 // Controller for user registration
@@ -44,6 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      token: generateToken(user._id),
     });
   } else { 
     res.status(400);
@@ -66,6 +68,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      token: generateToken(user._id),
     });
   } else {
     res.status(401);
@@ -74,8 +77,34 @@ const loginUser = asyncHandler(async (req, res) => {
 
 });
 
+const profile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id); // Find the user by id
+
+  if (user) {
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+// Generate a JSON Web Token
+// @desc: Generates a JSON Web Token for user authentication.
+// @param: id - The user ID to be encoded in the token.
+// @returns: A JSON Web Token containing the user ID.
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
+
 // Exporting the controller functions to be used in router definitions
 module.exports = {
   registerUser,
   loginUser,
+  profile
 };
