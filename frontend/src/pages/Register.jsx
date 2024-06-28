@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,16 @@ const Register = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  console.log(formData, "formData");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (password !== password2) {
+      toast.error("Passwords do not match");
+    } else {
+      toast.success("Success!");
+      console.log(formData);
+    }
+  };
+
   return (
     <>
       <section className="heading">
@@ -25,7 +35,7 @@ const Register = () => {
         <p>Please create an Account</p>
       </section>
       <section className="form">
-        <form>
+        <form onSubmit={onSubmit}>
           <div className="form-group">
             <input
               type="text"
@@ -34,6 +44,7 @@ const Register = () => {
               value={name}
               onChange={onChange}
               className="form-control"
+              required
             />
           </div>
           <div className="form-group">
@@ -44,6 +55,7 @@ const Register = () => {
               value={email}
               onChange={onChange}
               className="form-control"
+              required
             />
           </div>
           <div className="form-group">
@@ -54,6 +66,7 @@ const Register = () => {
               value={password}
               onChange={onChange}
               className="form-control"
+              required
             />
           </div>
           <div className="form-group">
@@ -64,9 +77,14 @@ const Register = () => {
               value={password2}
               onChange={onChange}
               className="form-control"
+              required
             />
           </div>
-          <button type="submit">Register</button>
+          <div className="form-group">
+            <button type="submit" className="btn btn-block">
+              Submit
+            </button>
+          </div>
         </form>
       </section>
     </>
